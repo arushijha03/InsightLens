@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large data files
+data/
+embeddings/
+faiss_index/
+
+# OS files
+.DS_Store
+Thumbs.db
