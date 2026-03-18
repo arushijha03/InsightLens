@@ -15,6 +15,7 @@ venv/
 data/
 embeddings/
 faiss_index/
+analysis/
 
 # OS files
 .DS_Store
