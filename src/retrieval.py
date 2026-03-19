@@ -45,7 +45,6 @@ def retrieve_reviews(query: str, k: int = 10):
 
     results = []
     for i, idx in enumerate(ids[0]):
-        # Get the full dict from mapping
         review_dict = mapping[str(idx)].copy()
         review_dict["index"] = idx
         review_dict["score"] = float(scores[0][i])
