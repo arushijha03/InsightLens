@@ -2,6 +2,8 @@ import pandas as pd
 from .retrieval import retrieve_reviews, get_cluster_distribution
 from .theme_extraction import generate_insight
 from .summary import summarize_reviews
+import re
+from bs4 import BeautifulSoup
 
 import os
 
@@ -11,6 +13,14 @@ CLUSTER_KEYWORDS_CSV = os.path.join(BASE_DIR, "analysis", "cluster_keywords.csv"
 
 clusters_df = pd.read_csv(CLUSTERS_CSV)
 cluster_keywords_df = pd.read_csv(CLUSTER_KEYWORDS_CSV)
+
+
+def clean_text_runtime(text):
+    text = BeautifulSoup(str(text), "html.parser").get_text()
+    text = re.sub(r"[^a-zA-Z0-9\s]", " ", text)
+    text = text.lower()
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
 def full_pipeline(query, k=10):
     """
@@ -28,7 +38,7 @@ def full_pipeline(query, k=10):
 
     # 2️⃣ Extract indices and review texts
     indices = [item["index"] for item in results]
-    retrieved_reviews = [item["review_text"] for item in results]
+    retrieved_reviews = [clean_text_runtime(item["review_text"]) for item in results]
 
     # 3️⃣ Cluster-aware distribution
     cluster_info = get_cluster_distribution(indices, clusters_df)
