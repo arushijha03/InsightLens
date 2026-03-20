@@ -7,8 +7,6 @@ InsightLens is an end-to-end NLP pipeline that ingests Amazon product reviews, e
 [![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://python.org)
 [![FAISS](https://img.shields.io/badge/FAISS-Vector_Search-0467DF?logo=meta&logoColor=white)](https://github.com/facebookresearch/faiss)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
 ---
 
 ## Key Features
@@ -172,9 +170,3 @@ The app opens at `http://localhost:8501`. Enter a query like *"Top complaints ab
 - [ ] Implement comparative analysis across product categories
 - [ ] Add temporal trend analysis for reviews over time
 - [ ] Deploy on Hugging Face Spaces with full data
-
----
-
-## License
-
-This project is open-source under the [MIT License](LICENSE).
