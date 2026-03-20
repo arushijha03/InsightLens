@@ -38,21 +38,23 @@ def plot_cluster_sizes(df):
     plt.close(fig)
 
 
-def generate_wordcloud(keywords_text, title="Keywords WordCloud"):
+def generate_wordcloud(keywords_text, title="Keywords WordCloud", container=None):
     """
     Generate a word cloud for top keywords.
-    Skip if keywords_text is empty.
+    Renders into the given Streamlit container (e.g. a column), or the main page.
     """
+    target = container or st
     if not keywords_text.strip():
-        st.info(f"Skipping WordCloud for '{title}' — no keywords provided.")
+        target.info(f"Skipping WordCloud for '{title}' — no keywords provided.")
         return
 
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(keywords_text)
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(6, 3))
     ax.imshow(wordcloud, interpolation='bilinear')
     ax.axis('off')
-    ax.set_title(title)
-    st.pyplot(fig)
+    ax.set_title(title, fontsize=11, pad=8)
+    fig.tight_layout()
+    target.pyplot(fig)
     plt.close(fig)
 
 
@@ -68,11 +70,12 @@ def visualize_final_report(report_json_path):
     # Sentiment
     plot_sentiment(insight.get('sentiment', {}))
 
-    # WordClouds
+    # WordClouds in a single row
     dominant_keywords = " ".join(insight.get('dominant_theme', []))
     strengths_keywords = " ".join(insight.get('strengths', []))
     pain_points_keywords = " ".join(insight.get('pain_points', []))
 
-    generate_wordcloud(dominant_keywords, title="Dominant Theme Keywords")
-    generate_wordcloud(strengths_keywords, title="Strengths Keywords")
-    generate_wordcloud(pain_points_keywords, title="Pain Points Keywords")
+    col1, col2, col3 = st.columns(3)
+    generate_wordcloud(dominant_keywords, title="Dominant Theme", container=col1)
+    generate_wordcloud(strengths_keywords, title="Strengths", container=col2)
+    generate_wordcloud(pain_points_keywords, title="Pain Points", container=col3)

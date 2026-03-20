@@ -45,50 +45,58 @@ if run_button:
     # Display Top Reviews
     # ---------------------------
     seen = set()
+    display_num = 0
     st.subheader("Top Reviews")
-    for i, review in enumerate(output["top_reviews"], 1):
+    for review in output["top_reviews"]:
         text = review["clean_text"]
         if text in seen:
             continue
         seen.add(text)
-        st.markdown(f"**{i}.** {clean_html(review['review_text'])} (Rating: {review.get('rating', 'N/A')})")
+        display_num += 1
+        st.markdown(f"**{display_num}.** {clean_html(review['review_text'])} (Rating: {review.get('rating', 'N/A')})")
 
     # ---------------------------
-    # Cluster Information
+    # Cluster Info + Structured Insight side by side
     # ---------------------------
-    st.subheader("Cluster Information")
-    cluster_info = output["cluster_info"]
-    st.markdown(f"**Dominant Cluster:** {cluster_info.get('dominant_cluster', 'N/A')}")
-    st.markdown("**Top Clusters:**")
-    st.table(pd.DataFrame(cluster_info.get("top_clusters", []), columns=["Cluster ID", "Count"]))
+    st.divider()
+    col_cluster, col_insight = st.columns(2)
 
-    # ---------------------------
-    # Structured Insight
-    # ---------------------------
-    st.subheader("Structured Insight")
-    insight = output["insight"]
-    st.markdown(f"**Dominant Theme:** {', '.join(insight.get('dominant_theme', []))}")
-    st.markdown(f"**Strengths:** {', '.join(insight.get('strengths', []))}")
-    st.markdown(f"**Pain Points:** {', '.join(insight.get('pain_points', []))}")
-    st.markdown(f"**Key Observation:** {insight.get('key_observation', '')}")
-    st.markdown(f"**Business Recommendation:** {insight.get('business_recommendation', '')}")
+    with col_cluster:
+        st.subheader("Cluster Information")
+        cluster_info = output["cluster_info"]
+        st.markdown(f"**Dominant Cluster:** {cluster_info.get('dominant_cluster', 'N/A')}")
+        st.markdown("**Top Clusters:**")
+        st.table(pd.DataFrame(cluster_info.get("top_clusters", []), columns=["Cluster ID", "Count"]))
+
+    with col_insight:
+        st.subheader("Structured Insight")
+        insight = output["insight"]
+        st.markdown(f"**Dominant Theme:** {', '.join(insight.get('dominant_theme', []))}")
+        st.markdown(f"**Strengths:** {', '.join(insight.get('strengths', []))}")
+        st.markdown(f"**Pain Points:** {', '.join(insight.get('pain_points', []))}")
+        st.markdown(f"**Key Observation:** {insight.get('key_observation', '')}")
+        st.markdown(f"**Business Recommendation:** {insight.get('business_recommendation', '')}")
 
     # ---------------------------
     # Summary
     # ---------------------------
+    st.divider()
     st.subheader("Summary")
+    col_short, col_detail = st.columns(2)
     summary = output.get("summary", {})
-    st.markdown("**Short Summary:**")
-    st.write(summary.get("short_summary", ""))
-    st.markdown("**Detailed Summary:**")
-    st.write(summary.get("detailed_summary", ""))
+    with col_short:
+        st.markdown("**Short Summary:**")
+        st.write(summary.get("short_summary", ""))
+    with col_detail:
+        st.markdown("**Detailed Summary:**")
+        st.write(summary.get("detailed_summary", ""))
 
     # ---------------------------
-    # Optional: Visualizations
+    # Visualizations
     # ---------------------------
+    st.divider()
     st.subheader("Visualizations")
-    visualize_final_report_from_output = st.checkbox("Show Visualizations from Last Output", value=True)
-    if visualize_final_report_from_output:
+    if st.checkbox("Show Visualizations", value=True):
         # Save output temporarily to JSON to reuse existing visualization functions
         temp_json_path = "temp_report.json"
         with open(temp_json_path, "w", encoding="utf-8") as f:
