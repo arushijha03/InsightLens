@@ -1,7 +1,9 @@
+import streamlit as st
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import pandas as pd
 import json
+
 
 def plot_sentiment(sentiment_data):
     """
@@ -11,14 +13,15 @@ def plot_sentiment(sentiment_data):
     ratios = [
         sentiment_data.get('positive_ratio', 0),
         sentiment_data.get('negative_ratio', 0),
-        1 - sentiment_data.get('positive_ratio',0) - sentiment_data.get('negative_ratio',0)
+        1 - sentiment_data.get('positive_ratio', 0) - sentiment_data.get('negative_ratio', 0)
     ]
 
-    plt.figure(figsize=(6,4))
-    plt.bar(labels, ratios, color=['green','red','gray'])
-    plt.title(f"Sentiment Distribution (Avg Rating: {sentiment_data.get('avg_rating', 0):.2f})")
-    plt.ylabel("Ratio")
-    plt.show()
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.bar(labels, ratios, color=['green', 'red', 'gray'])
+    ax.set_title(f"Sentiment Distribution (Avg Rating: {sentiment_data.get('avg_rating', 0):.2f})")
+    ax.set_ylabel("Ratio")
+    st.pyplot(fig)
+    plt.close(fig)
 
 
 def plot_cluster_sizes(df):
@@ -26,12 +29,13 @@ def plot_cluster_sizes(df):
     Plot number of reviews per cluster
     """
     cluster_counts = df['cluster'].value_counts().sort_index()
-    plt.figure(figsize=(8,4))
-    cluster_counts.plot(kind='bar', color='skyblue')
-    plt.title("Number of Reviews per Cluster")
-    plt.xlabel("Cluster")
-    plt.ylabel("Count")
-    plt.show()
+    fig, ax = plt.subplots(figsize=(8, 4))
+    cluster_counts.plot(kind='bar', color='skyblue', ax=ax)
+    ax.set_title("Number of Reviews per Cluster")
+    ax.set_xlabel("Cluster")
+    ax.set_ylabel("Count")
+    st.pyplot(fig)
+    plt.close(fig)
 
 
 def generate_wordcloud(keywords_text, title="Keywords WordCloud"):
@@ -40,15 +44,17 @@ def generate_wordcloud(keywords_text, title="Keywords WordCloud"):
     Skip if keywords_text is empty.
     """
     if not keywords_text.strip():
-        print(f"⚠️ Skipping WordCloud for '{title}' — no keywords provided.")
+        st.info(f"Skipping WordCloud for '{title}' — no keywords provided.")
         return
 
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(keywords_text)
-    plt.figure(figsize=(10,5))
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis('off')
-    plt.title(title)
-    plt.show()
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.imshow(wordcloud, interpolation='bilinear')
+    ax.axis('off')
+    ax.set_title(title)
+    st.pyplot(fig)
+    plt.close(fig)
+
 
 def visualize_final_report(report_json_path):
     """
@@ -57,13 +63,15 @@ def visualize_final_report(report_json_path):
     with open(report_json_path, 'r', encoding='utf-8') as f:
         report = json.load(f)
 
+    insight = report.get('insight', {})
+
     # Sentiment
-    plot_sentiment(report.get('sentiment', {}))
+    plot_sentiment(insight.get('sentiment', {}))
 
     # WordClouds
-    dominant_keywords = " ".join(report.get('dominant_theme', []))
-    strengths_keywords = " ".join(report.get('strengths', []))
-    pain_points_keywords = " ".join(report.get('pain_points', []))
+    dominant_keywords = " ".join(insight.get('dominant_theme', []))
+    strengths_keywords = " ".join(insight.get('strengths', []))
+    pain_points_keywords = " ".join(insight.get('pain_points', []))
 
     generate_wordcloud(dominant_keywords, title="Dominant Theme Keywords")
     generate_wordcloud(strengths_keywords, title="Strengths Keywords")
