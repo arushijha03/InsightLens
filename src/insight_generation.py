@@ -3,7 +3,104 @@
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from collections import Counter
 import numpy as np
+import json
+import os
+import logging
 
+logger = logging.getLogger(__name__)
+
+
+# ===================================
+# LLM-POWERED INSIGHT GENERATION
+# ===================================
+
+def _get_openai_client():
+    try:
+        from openai import OpenAI
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            return None
+        return OpenAI(api_key=api_key)
+    except ImportError:
+        return None
+
+
+def _build_llm_prompt(top_reviews, cluster_keywords=None):
+    review_block = ""
+    for i, r in enumerate(top_reviews[:15], 1):
+        rating = r.get("rating", "N/A")
+        text = r.get("clean_text", r.get("review_text", ""))[:300]
+        review_block += f"  {i}. [Rating {rating}/5] {text}\n"
+
+    keywords_str = ", ".join(cluster_keywords) if cluster_keywords else "N/A"
+
+    return f"""You are a product analytics expert. Analyze the following Amazon product reviews and return structured insights.
+
+CLUSTER KEYWORDS (topic context): {keywords_str}
+
+REVIEWS:
+{review_block}
+
+Return ONLY a valid JSON object with exactly this structure (no markdown, no explanation):
+{{
+  "dominant_theme": ["keyword1", "keyword2", "keyword3"],
+  "strengths": ["strength1", "strength2", "strength3"],
+  "pain_points": ["pain_point1", "pain_point2", "pain_point3"],
+  "key_observation": "A single sentence summarizing the most important finding.",
+  "business_recommendation": "A single actionable recommendation for the product team."
+}}
+
+Rules:
+- dominant_theme: 3-5 keywords that define the central topic
+- strengths: 3-5 specific things customers praise (not generic words like 'good')
+- pain_points: 3-5 specific complaints (not generic words like 'bad')
+- key_observation: one concrete sentence linking strengths and pain points
+- business_recommendation: one actionable, specific recommendation"""
+
+
+def _generate_insight_llm(top_reviews, cluster_keywords=None):
+    client = _get_openai_client()
+    if client is None:
+        return None
+
+    prompt = _build_llm_prompt(top_reviews, cluster_keywords)
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a product analytics expert. Respond only with valid JSON."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.3,
+            max_tokens=500,
+        )
+
+        raw = response.choices[0].message.content.strip()
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+        result = json.loads(raw)
+
+        required_keys = {"dominant_theme", "strengths", "pain_points",
+                         "key_observation", "business_recommendation"}
+        if not required_keys.issubset(result.keys()):
+            logger.warning("LLM response missing required keys, falling back to TF-IDF.")
+            return None
+
+        return result
+
+    except Exception as e:
+        logger.warning("LLM insight generation failed: %s. Falling back to TF-IDF.", e)
+        return None
+
+
+# ===================================
+# TF-IDF INSIGHT GENERATION (FALLBACK)
+# ===================================
 
 # -------------------------------
 # 1. Split Reviews
@@ -121,19 +218,12 @@ def generate_recommendation(pain_points, strengths):
     return " ".join(recs)
 
 
-# -------------------------------
-# 5. Main Insight Function
-# -------------------------------
-def generate_insight(top_reviews, cluster_info=None, cluster_keywords=None):
-
+def _generate_insight_tfidf(top_reviews, cluster_info=None, cluster_keywords=None):
     positives, negatives = extract_signals(top_reviews)
 
     pos_terms = get_top_terms(positives)
     neg_terms = get_top_terms(negatives)
 
-    # -------------------------------
-    # Clean weak / generic words
-    # -------------------------------
     GENERIC_WORDS = {
         "time", "day", "thing", "way", "lot",
         "dinner", "morning", "night", "coffee"
@@ -144,26 +234,18 @@ def generate_insight(top_reviews, cluster_info=None, cluster_keywords=None):
     pos_terms = [w for w in pos_terms if w not in GENERIC_WORDS and w not in WEAK_WORDS]
     neg_terms = [w for w in neg_terms if w not in GENERIC_WORDS and w not in WEAK_WORDS]
 
-    # Remove overlap
     pos_terms = [w for w in pos_terms if w not in neg_terms]
     neg_terms = [w for w in neg_terms if w not in pos_terms]
 
-    # Prefer meaningful phrases
     pos_terms = sorted(pos_terms, key=lambda x: len(x.split()), reverse=True)
     neg_terms = sorted(neg_terms, key=lambda x: len(x.split()), reverse=True)
 
-    # Fallback safety
     if not pos_terms:
         pos_terms = ["quality", "smooth taste"]
 
     if not neg_terms:
         neg_terms = ["bitter taste", "quality issues"]
 
-    sentiment = sentiment_summary(top_reviews)
-
-    # -------------------------------
-    # Clean dominant theme
-    # -------------------------------
     GENERIC_THEME_WORDS = {
         "amazon", "order", "product", "item",
         "cup", "price", "time", "starbucks"
@@ -178,9 +260,6 @@ def generate_insight(top_reviews, cluster_info=None, cluster_keywords=None):
     if not dominant_theme:
         dominant_theme = pos_terms[:2] + neg_terms[:2]
 
-    # -------------------------------
-    # Key Observation
-    # -------------------------------
     if neg_terms and pos_terms:
         key_observation = (
             f"A key issue is {neg_terms[0]}, while satisfied users mention {pos_terms[0]}"
@@ -192,7 +271,30 @@ def generate_insight(top_reviews, cluster_info=None, cluster_keywords=None):
         "dominant_theme": dominant_theme,
         "strengths": pos_terms[:5],
         "pain_points": neg_terms[:5],
-        "sentiment": sentiment,
         "key_observation": key_observation,
         "business_recommendation": generate_recommendation(neg_terms, pos_terms),
     }
+
+
+# ===================================
+# 5. MAIN INSIGHT FUNCTION
+# ===================================
+def generate_insight(top_reviews, cluster_info=None, cluster_keywords=None, use_llm=True):
+
+    llm_result = None
+    if use_llm:
+        llm_result = _generate_insight_llm(top_reviews, cluster_keywords)
+
+    if llm_result is not None:
+        insight_source = "llm"
+        insight = llm_result
+    else:
+        insight_source = "tfidf"
+        insight = _generate_insight_tfidf(top_reviews, cluster_info, cluster_keywords)
+
+    # Sentiment is always computed deterministically
+    sentiment = sentiment_summary(top_reviews)
+    insight["sentiment"] = sentiment
+    insight["insight_source"] = insight_source
+
+    return insight

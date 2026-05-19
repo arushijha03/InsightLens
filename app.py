@@ -21,6 +21,7 @@ st.markdown("Extract actionable insights from Amazon product reviews.")
 st.sidebar.header("Query Settings")
 query = st.sidebar.text_input("Enter your query:", value="Top complaints about coffee taste?")
 top_k = st.sidebar.slider("Number of top reviews to retrieve:", min_value=1, max_value=20, value=5)
+use_llm = st.sidebar.toggle("Generate insights with LLM", value=True)
 run_button = st.sidebar.button("Run Pipeline")
 
 # -------------------------------
@@ -31,15 +32,15 @@ def clean_html(text):
     return BeautifulSoup(str(text), "html.parser").get_text()
 
 @st.cache_data(show_spinner=True)
-def run_full_pipeline_cached(query, k):
-    return full_pipeline(query, k)
+def run_full_pipeline_cached(query, k, use_llm):
+    return full_pipeline(query, k, use_llm=use_llm)
 
 # -------------------------------
 # Run Pipeline for Single Query
 # -------------------------------
 if run_button:
     with st.spinner("Running pipeline..."):
-        output = run_full_pipeline_cached(query, top_k)
+        output = run_full_pipeline_cached(query, top_k, use_llm)
 
     # ---------------------------
     # Display Top Reviews
@@ -71,6 +72,9 @@ if run_button:
     with col_insight:
         st.subheader("Structured Insight")
         insight = output["insight"]
+        source = insight.get("insight_source", "tfidf")
+        source_label = "GPT-4o-mini" if source == "llm" else "TF-IDF"
+        st.caption(f"Generated via: **{source_label}**")
         st.markdown(f"**Dominant Theme:** {', '.join(insight.get('dominant_theme', []))}")
         st.markdown(f"**Strengths:** {', '.join(insight.get('strengths', []))}")
         st.markdown(f"**Pain Points:** {', '.join(insight.get('pain_points', []))}")
@@ -117,7 +121,7 @@ if batch_button:
     queries = batch_queries.strip().split("\n")
     results = {}
     for q in queries:
-        results[q] = run_full_pipeline_cached(q, top_k)
+        results[q] = run_full_pipeline_cached(q, top_k, use_llm)
 
     st.write("Batch results saved in memory for display or export.")
 

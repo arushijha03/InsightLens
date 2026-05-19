@@ -36,7 +36,7 @@ def clean_text_runtime(text):
 # -------------------------------
 # Main Pipeline
 # -------------------------------
-def full_pipeline(query, k=10):
+def full_pipeline(query, k=10, use_llm=True):
 
     results = retrieve_reviews(query, k=k)
 
@@ -79,7 +79,8 @@ def full_pipeline(query, k=10):
     insight = generate_insight(
         top_reviews=top_reviews,
         cluster_info=cluster_info,
-        cluster_keywords=cluster_keywords
+        cluster_keywords=cluster_keywords,
+        use_llm=use_llm
     )
 
     # Summarization
