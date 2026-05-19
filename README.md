@@ -257,13 +257,3 @@ InsightLens/
 | **Recommendation** | Monitor customer feedback trends to identify improvement areas |
 | **Avg Rating** | 4.0 |
 | **Sentiment** | 60% positive, 20% negative, 20% neutral |
-
----
-
-## Future Improvements
-
-- [ ] Add LLM-powered abstractive summarization as an optional mode
-- [ ] Support additional LLM providers (Gemini, Claude, local models via Ollama)
-- [ ] Implement comparative analysis across product categories
-- [ ] Add temporal trend analysis for reviews over time
-- [ ] Deploy on Hugging Face Spaces with full data
