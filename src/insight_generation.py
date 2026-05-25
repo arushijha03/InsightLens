@@ -17,10 +17,20 @@ logger = logging.getLogger(__name__)
 def _get_openai_client():
     try:
         from openai import OpenAI
-        from dotenv import load_dotenv
-        load_dotenv()
 
-        api_key = os.getenv("OPENAI_API_KEY")
+        api_key = None
+
+        try:
+            import streamlit as st
+            api_key = st.secrets.get("OPENAI_API_KEY")
+        except Exception:
+            pass
+
+        if not api_key:
+            from dotenv import load_dotenv
+            load_dotenv()
+            api_key = os.getenv("OPENAI_API_KEY")
+
         if not api_key:
             return None
         return OpenAI(api_key=api_key)

@@ -1,0 +1,51 @@
+cluster,keywords,domain
+0,"price, amazon, cup, order, flavor, beans, taste, box, time, starbucks",human_food
+1,"flavor, taste, cup, strong, bold, roast, bitter, flavored, dark, vanilla",human_food
+2,"dogs, loves, treat, training, small, little, eat, size, dog loves, don",pet_food
+3,"taste, sweet, use, free, syrup, flavor, sugar free, stevia, coffee, honey",human_food
+4,"candy, box, gift, chocolate, bought, little, kids, amazon, bag, time",human_food
+5,"drink, taste, drinking, day, green, ginger, cup, green tea, teas, caffeine",human_food
+6,"baby, food, old, loves, eat, son, kids, little, organic, daughter",human_food
+7,"amazon, stores, price, store, order, local, grocery, time, hard, available",human_food
+8,"eat, cat food, chicken, dry, canned, foods, diet, wellness, ingredients, don",pet_food
+9,"snack, taste, eat, bag, snacks, calories, healthy, flavor, little, low",human_food
+10,"taste, salty, flavor, use, sodium, sea, sea salt, don, little, food",human_food
+11,"cup, decaf, espresso, strong, pods, taste, drink, use, flavor, tried",human_food
+12,"sauce, hot, flavor, spicy, taste, use, chili, heat, hot sauce, ve",human_food
+13,"dog, treat, dogs, toy, treats, loves, ball, time, old, food",pet_food
+14,"box, amazon, order, arrived, time, ordered, cans, bag, received, fresh",human_food
+15,"beef, beef jerky, flavor, taste, meat, jack, ve, bag, eat, texture",human_food
+16,"taste, flavor, potato, bag, chip, salt, bags, potato chips, eat, snack",human_food
+17,"coconut water, taste, flavor, zico, drink, tried, tastes, ve, milk, coco",human_food
+18,"cereal, oatmeal, taste, granola, eat, milk, sugar, flavor, breakfast, sweet",human_food
+19,"organic, food, ingredients, products, taste, amazon, use, don, price, stuff",human_food
+20,"price, amazon, box, store, pack, shipping, bag, order, oz, grocery",human_food
+21,"coconut, coconut oil, olive, use, olive oil, taste, cooking, flavor, skin, hair",human_food
+22,"cookie, chocolate, taste, flavor, sweet, free, eat, amazon, little, sugar",human_food
+23,"energy, drink, day, use, sleep, taste, water, time, don, work",human_food
+24,"water, drink, taste, flavor, juice, soda, bottle, tastes, drinks, sweet",human_food
+25,"bar, taste, chocolate, snack, protein, kind, flavor, eat, sweet, healthy",human_food
+26,"taste, flavor, tastes, price, sweet, flavors, little, tried, ve, tasted",human_food
+27,"order, amazon, price, arrived, time, item, gift, received, ordered, shipping",human_food
+28,"dog, dogs, treats, amazon, price, loves, china, food, bag, treat",pet_food
+29,"gum, flavor, candy, taste, chew, hard, gummy, mints, sugar, time",human_food
+30,"dog, dogs, teeth, loves, chew, chews, bones, treat, treats, time",pet_food
+31,"bread, taste, pretzels, cookies, mix, wheat, flour, eat, products, ve",human_food
+32,"cats, treats, food, treat, litter, eat, loves, pill, bag, time",pet_food
+33,"bags, teas, bag, flavor, green, tea bags, cup, taste, box, use",human_food
+34,"taste, flavor, flavors, sweet, little, don, eat, delicious, fresh, amazon",human_food
+35,"cup, cups, keurig, flavor, taste, tried, strong, bold, cup coffee, blend",human_food
+36,"soup, rice, use, chicken, make, add, easy, flavor, taste, mix",human_food
+37,"taste, pop, oil, salt, popper, corn, flavor, kernels, movie, use",human_food
+38,"taste, fat, pb2, calories, chocolate, flavor, tastes, eat, use, regular",human_food
+39,"bread, mix, cake, make, flour, use, used, taste, pancakes, baking",human_food
+40,"use, used, time, little, don, work, easy, trap, bought, works",human_food
+41,"hair, skin, shampoo, use, conditioner, oil, using, scalp, used, smell",human_food
+42,"milk, protein, taste, use, flavor, vanilla, mix, drink, powder, make",human_food
+43,"almonds, nuts, beans, taste, flavor, seeds, peanuts, fresh, snack, eat",human_food
+44,"hot, cocoa, taste, dark, flavor, hot chocolate, dark chocolate, milk, chocolates, bar",human_food
+45,"flavor, taste, green, green tea, teas, drink, tried, strong, ve, chai",human_food
+46,"cheese, taste, flavor, tuna, meat, eat, chicken, food, ve, use",human_food
+47,"dogs, dog food, eat, loves, ingredients, dry, foods, chicken, old, healthy",pet_food
+48,"amazon, price, teas, order, green, box, taste, stores, time, green tea",human_food
+49,"pasta, noodles, sauce, taste, gluten, flavor, free, wheat, texture, cheese",human_food

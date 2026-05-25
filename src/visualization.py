@@ -58,12 +58,13 @@ def generate_wordcloud(keywords_text, title="Keywords WordCloud", container=None
     plt.close(fig)
 
 
-def visualize_final_report(report_json_path):
+def visualize_final_report(report):
     """
-    Full visualizations from the final report JSON
+    Full visualizations from the final report dict (or JSON file path for backward compatibility).
     """
-    with open(report_json_path, 'r', encoding='utf-8') as f:
-        report = json.load(f)
+    if isinstance(report, str):
+        with open(report, 'r', encoding='utf-8') as f:
+            report = json.load(f)
 
     insight = report.get('insight', {})
 

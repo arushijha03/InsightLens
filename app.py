@@ -101,11 +101,7 @@ if run_button:
     st.divider()
     st.subheader("Visualizations")
     if st.checkbox("Show Visualizations", value=True):
-        # Save output temporarily to JSON to reuse existing visualization functions
-        temp_json_path = "temp_report.json"
-        with open(temp_json_path, "w", encoding="utf-8") as f:
-            json.dump(output, f, indent=2)
-        visualize_final_report(temp_json_path)
+        visualize_final_report(output)
 
 # -------------------------------
 # Sidebar - Batch Queries
@@ -123,9 +119,12 @@ if batch_button:
     for q in queries:
         results[q] = run_full_pipeline_cached(q, top_k, use_llm)
 
-    st.write("Batch results saved in memory for display or export.")
+    st.success("Batch queries completed!")
 
-    # Save batch results
-    with open("reports/batch_insights.json", "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2)
-    st.success("Batch insights saved to reports/batch_insights.json")
+    batch_json = json.dumps(results, indent=2)
+    st.download_button(
+        label="Download Batch Results (JSON)",
+        data=batch_json,
+        file_name="batch_insights.json",
+        mime="application/json"
+    )
