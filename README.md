@@ -2,10 +2,12 @@
 
 **Turn thousands of raw product reviews into structured, actionable business insights — powered by semantic search, clustering, NLP, and LLMs.**
 
-[![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-InsightLens-FF4B4B?logo=streamlit&logoColor=white)](https://euec5wxonk9zyfm4w2wzht.streamlit.app/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://python.org)
 [![FAISS](https://img.shields.io/badge/FAISS-Vector_Search-0467DF?logo=meta&logoColor=white)](https://github.com/facebookresearch/faiss)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?logo=openai&logoColor=white)](https://openai.com)
+
+**[Try the Live Demo](https://euec5wxonk9zyfm4w2wzht.streamlit.app/)**
 
 ---
 
@@ -152,25 +154,31 @@ Manual analysis of even a few hundred reviews is time-consuming and subjective. 
 
 ## Getting Started
 
-### Prerequisites
+### Live Demo
+
+Try InsightLens instantly — no setup required: **[https://euec5wxonk9zyfm4w2wzht.streamlit.app/](https://euec5wxonk9zyfm4w2wzht.streamlit.app/)**
+
+### Run Locally
+
+#### Prerequisites
 
 - Python 3.10+
 - OpenAI API key (optional — TF-IDF fallback works without it)
 
-### 1. Clone the Repository
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/arushijha03/InsightLens.git
 cd InsightLens
 ```
 
-### 2. Install Dependencies
+#### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configure LLM (Optional)
+#### 3. Configure LLM (Optional)
 
 ```bash
 cp .env.example .env
@@ -186,7 +194,7 @@ Get a key from [platform.openai.com/api-keys](https://platform.openai.com/api-ke
 
 > If no API key is set, the system automatically uses TF-IDF-based insight generation. You can also toggle between LLM and TF-IDF from the dashboard sidebar at runtime.
 
-### 4. Run the Dashboard
+#### 4. Run the Dashboard
 
 ```bash
 python -m streamlit run app.py
