@@ -7,7 +7,13 @@
 [![FAISS](https://img.shields.io/badge/FAISS-Vector_Search-0467DF?logo=meta&logoColor=white)](https://github.com/facebookresearch/faiss)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?logo=openai&logoColor=white)](https://openai.com)
 
-**[Try the Live Demo](https://euec5wxonk9zyfm4w2wzht.streamlit.app/)**
+## Live Demo
+
+| | Link |
+|---|---|
+| **Try the app** (Streamlit UI) | [https://euec5wxonk9zyfm4w2wzht.streamlit.app/](https://euec5wxonk9zyfm4w2wzht.streamlit.app/) |
+
+**Quick try:** open the Streamlit app → enter a your query (e.g. *Top complaints about coffee taste?*) → select number of reviews to retrieve →click **Run Pipeline**.
 
 ---
 
