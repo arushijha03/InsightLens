@@ -156,7 +156,11 @@ Manual analysis of even a few hundred reviews is time-consuming and subjective. 
 
 ### Live Demo
 
-Try InsightLens instantly — no setup required: **[https://euec5wxonk9zyfm4w2wzht.streamlit.app/](https://euec5wxonk9zyfm4w2wzht.streamlit.app/)**
+| | Link |
+|---|------|
+| Try the app (Streamlit UI) | [https://euec5wxonk9zyfm4w2wzht.streamlit.app/](https://euec5wxonk9zyfm4w2wzht.streamlit.app/) |
+
+**Quick try:** open the Streamlit app → enter a query (e.g. *"Top complaints about coffee taste?"*) → toggle LLM on/off → click **Run Pipeline**.
 
 ### Run Locally
 
