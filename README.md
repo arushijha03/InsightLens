@@ -11,6 +11,7 @@
 
 | | Link |
 |---|---|
+| **Watch Demo**| [https://www.loom.com/share/5b18dec2235a4f0fa4a551f9eb3f9cb4](https://www.loom.com/share/5b18dec2235a4f0fa4a551f9eb3f9cb4) |
 | **Try the app** (Streamlit UI) | [https://euec5wxonk9zyfm4w2wzht.streamlit.app/](https://euec5wxonk9zyfm4w2wzht.streamlit.app/) |
 
 **Quick try:** open the Streamlit app → enter a your query (e.g. *Top complaints about coffee taste?*) → select number of reviews to retrieve →click **Run Pipeline**.
