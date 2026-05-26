@@ -100,8 +100,8 @@ Manual analysis of even a few hundred reviews is time-consuming and subjective. 
 | **Embeddings** | `sentence-transformers/all-MiniLM-L6-v2` | Encode reviews into 384-dim semantic vectors |
 | **Vector Search** | FAISS `IndexFlatIP` | Sub-second cosine similarity retrieval over 200K vectors |
 | **Clustering** | PCA (50 components) + KMeans (k=50) | Group reviews into coherent topic clusters |
-| **Insight Generation** | OpenAI GPT-4o-mini (primary) | LLM-powered themes, strengths, pain points, recommendations |
-| **Insight Fallback** | TF-IDF + rule-based engine | Automatic fallback when LLM is unavailable |
+| **Insight Generation (Primary)** | OpenAI GPT-4o-mini | LLM generates themes, strengths, pain points, and recommendations from retrieved reviews |
+| **Insight Generation (Fallback)** | TF-IDF + rule-based engine | Automatic fallback only when LLM is unavailable or toggled off |
 | **Keyword Extraction** | TF-IDF (1–2 grams, custom stopwords) | Extract interpretable keywords per cluster |
 | **Summarization** | Extractive — TF-IDF sentence ranking | Concise summaries with Jaccard overlap deduplication |
 | **Frontend** | Streamlit | Interactive dashboard with toggle, charts, and word clouds |
@@ -114,10 +114,10 @@ Manual analysis of even a few hundred reviews is time-consuming and subjective. 
 
 - **Semantic Retrieval** — Query reviews in natural language; FAISS returns the most relevant matches via cosine similarity
 - **Automatic Clustering** — PCA + KMeans groups 200K+ reviews into 50 topic clusters with TF-IDF keyword extraction
-- **LLM-Powered Insights** — GPT-4o-mini generates dominant themes, strengths, pain points, and business recommendations
-- **Graceful Fallback** — If the LLM is unavailable or toggled off, TF-IDF-based insight generation kicks in automatically
+- **LLM-Powered Insights (Primary)** — GPT-4o-mini analyzes retrieved reviews and generates dominant themes, strengths, pain points, and business recommendations
+- **TF-IDF Fallback** — If the LLM is unavailable or toggled off, a TF-IDF + rule-based engine serves as a fallback for insight generation
 - **UI Toggle** — Switch between LLM and TF-IDF insight generation directly from the dashboard sidebar
-- **Extractive Summarization** — Short and detailed summaries using TF-IDF sentence ranking
+- **Extractive Summarization** — Short and detailed summaries via TF-IDF sentence ranking with overlap deduplication
 - **Interactive Dashboard** — Streamlit UI with sentiment charts, word clouds, and side-by-side insight panels
 - **Batch Processing** — Run multiple queries at once and export results to JSON
 
@@ -132,7 +132,7 @@ Manual analysis of even a few hundred reviews is time-consuming and subjective. 
 | **Product Improvement Signals** | Generates specific, actionable recommendations (e.g., "Improve packaging durability") tied directly to customer feedback |
 | **Marketing Intelligence** | Identifies what customers value most (strengths) to inform ad copy, product descriptions, and positioning |
 | **Scalable Monitoring** | Batch query mode enables teams to track multiple product dimensions simultaneously and export findings for reporting |
-| **Cost-Efficient Analysis** | LLM insights via GPT-4o-mini keep per-query costs minimal (~$0.001/query); TF-IDF fallback ensures zero-cost operation when needed |
+| **Cost-Efficient Analysis** | GPT-4o-mini powers primary insight generation at ~$0.001/query; TF-IDF fallback ensures zero-cost operation if LLM is unavailable |
 
 ---
 
@@ -221,7 +221,7 @@ The app opens at `http://localhost:8501`. Enter a query like *"Top complaints ab
 3. **Indexing** — Vectors are L2-normalized and stored in a FAISS inner-product index for fast retrieval
 4. **Clustering** — PCA reduces dimensionality to 50, then KMeans assigns reviews to 50 topic clusters
 5. **Theme Extraction** — TF-IDF extracts top keywords per cluster for interpretability
-6. **Query Time** — User query is embedded → FAISS retrieves top-k reviews → cluster distribution is analyzed → GPT-4o-mini generates insights (falls back to TF-IDF if unavailable or toggled off) → extractive summaries are generated
+6. **Query Time** — User query is embedded → FAISS retrieves top-k reviews → cluster distribution is analyzed → **GPT-4o-mini generates structured insights** (themes, strengths, pain points, recommendations); TF-IDF serves only as a fallback if the LLM is unavailable → extractive summaries are generated
 7. **Visualization** — Sentiment distribution, word clouds, and structured insight panels are displayed in Streamlit
 
 ---
@@ -242,7 +242,7 @@ InsightLens/
 │   ├── retrieval.py                # Semantic search & cluster distribution
 │   ├── clustering.py               # PCA + KMeans clustering
 │   ├── theme_extraction.py         # TF-IDF keywords per cluster
-│   ├── insight_generation.py       # LLM + TF-IDF insight generation
+│   ├── insight_generation.py       # LLM-powered insights (TF-IDF fallback)
 │   ├── summary.py                  # Extractive summarization
 │   └── visualization.py            # Sentiment charts & word clouds
 ├── notebooks/
@@ -268,7 +268,7 @@ InsightLens/
 
 | Section | Output |
 |---------|--------|
-| **Insight Source** | GPT-4o-mini (or TF-IDF if toggled off) |
+| **Insight Source** | GPT-4o-mini (TF-IDF only as fallback) |
 | **Dominant Theme** | flavor, beans, taste |
 | **Strengths** | robust, likes, best |
 | **Pain Points** | disgusted, sharp, metallic |
